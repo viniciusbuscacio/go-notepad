@@ -1,0 +1,7 @@
+# Normalize line endings: repo stores LF, checkout is native per-OS.
+* text=auto eol=lf
+
+# Binary assets — never touch.
+*.png binary
+*.ico binary
+*.exe binary

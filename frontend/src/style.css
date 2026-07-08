@@ -1,0 +1,1001 @@
+:root,
+:root[data-theme="dark"] {
+  --bg: #202020;
+  --bg-rgb: 32 32 32;
+  --bg-alpha: 1;
+  --titlebar-fg: #d6d6d6;
+  --screen-fg: #ffffff;
+  --formula-fg: #9a9a9a;
+  --key-bg: #323232;
+  --key-bg-hover: #3d3d3d;
+  --key-bg-active: #2a2a2a;
+  --key-fn-bg: #2b2b2b;
+  --key-fn-hover: #363636;
+  --key-fg: #ffffff;
+  --key-fg-dim: #d0d0d0;
+  --accent: #4cc2ff;
+  --accent-hover: #48b2e8;
+  --accent-fg: #003a5c;
+  --disabled-fg: #6a6a6a;
+  --border: #333333;
+  --panel-bg: #2b2b2b;
+  --panel-hover: #333333;
+  --input-bg: #1b1b1b;
+  --muted: #9a9a9a;
+  --danger: #ff99a4;
+  --hover-overlay: rgba(255, 255, 255, 0.06);
+  --switch-stroke: rgba(255, 255, 255, 0.6);
+  --switch-stroke-hover: rgba(255, 255, 255, 0.85);
+  --switch-thumb: #d6d6d6;
+  --scroll-thumb: rgba(255, 255, 255, 0.28);
+  --scroll-thumb-hover: rgba(255, 255, 255, 0.45);
+}
+
+:root[data-theme="light"] {
+  --bg: #f3f3f3;
+  --bg-rgb: 243 243 243;
+  --titlebar-fg: #1a1a1a;
+  --screen-fg: #1a1a1a;
+  --formula-fg: #616161;
+  --key-bg: #ffffff;
+  --key-bg-hover: #f0f0f0;
+  --key-bg-active: #e6e6e6;
+  --key-fn-bg: #e2e2e2;
+  --key-fn-hover: #d6d6d6;
+  --key-fg: #1a1a1a;
+  --key-fg-dim: #333333;
+  --accent: #005fb8;
+  --accent-hover: #0a6cc8;
+  --accent-fg: #ffffff;
+  --disabled-fg: #a0a0a0;
+  --border: #e2e2e2;
+  --panel-bg: #ffffff;
+  --panel-hover: #f4f4f4;
+  --input-bg: #ffffff;
+  --muted: #757575;
+  --danger: #c42b1c;
+  --hover-overlay: rgba(0, 0, 0, 0.05);
+  --switch-stroke: rgba(0, 0, 0, 0.45);
+  --switch-stroke-hover: rgba(0, 0, 0, 0.65);
+  --switch-thumb: #555555;
+  --scroll-thumb: rgba(0, 0, 0, 0.28);
+  --scroll-thumb-hover: rgba(0, 0, 0, 0.45);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Form elements don't inherit the page font by default — force it so every
+   button/input uses the same Segoe UI as the rest of the app. */
+button,
+input,
+textarea,
+select {
+  font-family: inherit;
+  letter-spacing: inherit;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+}
+
+body {
+  font-family: "Segoe UI Variable", "Segoe UI", system-ui, -apple-system,
+    "Helvetica Neue", Arial, sans-serif;
+  background: transparent;
+  color: var(--screen-fg);
+  user-select: none;
+  overflow: hidden;
+}
+
+.window {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  /* Base surface honours the transparency slider (--bg-alpha). Buttons and
+     panels keep their own opaque backgrounds, giving a frosted look. */
+  background: rgb(var(--bg-rgb) / var(--bg-alpha, 1));
+}
+
+/* Thin, subtle scrollbars everywhere (editor, panels) instead of the chunky
+   default. WKWebView honours the WebKit pseudo-elements. */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--scroll-thumb);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--scroll-thumb-hover);
+}
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Title bar ---------------------------------------------------------------- */
+.titlebar {
+  display: flex;
+  align-items: center;
+  height: 32px;
+  flex-shrink: 0;
+  gap: 4px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-left: 10px;
+  flex: 1;
+  color: var(--titlebar-fg);
+}
+
+.app-glyph {
+  width: 20px;
+  height: 20px;
+}
+
+.titlebar-title {
+  font-size: 12px;
+  color: var(--titlebar-fg);
+}
+
+.win-controls {
+  display: flex;
+  height: 100%;
+}
+
+.win-btn {
+  width: 46px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  color: var(--titlebar-fg);
+  font-size: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.win-btn:hover {
+  background: var(--hover-overlay);
+}
+
+.win-btn.close:hover {
+  background: #c42b1c;
+  color: #fff;
+}
+
+.ctrl-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.ctrl-icon.sq {
+  width: 14px;
+  height: 14px;
+}
+
+/* View shell --------------------------------------------------------------- */
+.view {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* Editor (notepad) --------------------------------------------------------- */
+.editor-main {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+  min-width: 0;
+}
+.pos-top .editor-main {
+  flex-direction: column;
+}
+.pos-left .editor-main {
+  flex-direction: row;
+}
+
+/* Tab strip — a horizontal row on top, or a vertical column on the left. */
+.tabstrip {
+  display: flex;
+  flex-shrink: 0;
+  gap: 4px;
+  background: rgb(var(--bg-rgb) / var(--bg-alpha, 1));
+}
+.pos-top .tabstrip {
+  flex-direction: row;
+  align-items: center;
+  height: 38px;
+  padding: 4px 6px 0;
+  border-bottom: 1px solid var(--border);
+}
+.pos-left .tabstrip {
+  position: relative;
+  flex-direction: column;
+  width: var(--tabstrip-width, 190px);
+  min-width: 160px;
+  max-width: 320px;
+  padding: 6px;
+  border-right: 1px solid var(--border);
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.tabstrip-resizer {
+  position: absolute;
+  top: 0;
+  right: -4px;
+  bottom: 0;
+  width: 8px;
+  cursor: col-resize;
+  z-index: 2;
+}
+
+body.is-resizing-tabstrip,
+body.is-resizing-tabstrip * {
+  cursor: col-resize !important;
+  user-select: none;
+}
+
+.tabs {
+  display: flex;
+  gap: 3px;
+  min-width: 0;
+}
+.pos-top .tabs {
+  flex-direction: row;
+  align-items: center;
+  overflow-x: auto;
+  flex: 1;
+}
+.pos-left .tabs {
+  flex-direction: column;
+  flex: 1;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.tab {
+  position: relative; /* anchors the active-tab accent bar */
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  background: transparent;
+  color: var(--key-fg-dim);
+  cursor: pointer;
+  padding: 7px 8px 7px 12px;
+  font-size: 13px;
+  max-width: 190px;
+  min-width: 0;
+  flex-shrink: 0;
+}
+.pos-top .tab {
+  border-radius: 6px 6px 0 0;
+}
+.pos-left .tab {
+  border-radius: 6px;
+  width: 100%;
+  max-width: none;
+}
+.tab:hover {
+  background: var(--hover-overlay);
+}
+.tab.active {
+  background: var(--accent);
+  color: var(--accent-fg);
+}
+.tab.active .tab-name {
+  font-weight: 600;
+}
+.tab.active .tab-dot,
+.tab.active .tab-close {
+  color: var(--accent-fg);
+}
+.tab.active .tab-close {
+  opacity: 0.78;
+}
+.tab.active .tab-close:hover {
+  background: rgba(255, 255, 255, 0.18);
+  color: var(--accent-fg);
+  opacity: 1;
+}
+
+.tab-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+  text-align: left;
+}
+.tab-dot {
+  color: var(--accent);
+  font-size: 18px;
+  line-height: 0;
+}
+.tab-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  font-size: 11px;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+.tab-close:hover {
+  background: var(--hover-overlay);
+  color: var(--screen-fg);
+}
+
+.tab-new {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: var(--key-fg-dim);
+  cursor: pointer;
+  border-radius: 6px;
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+}
+.tab-new svg {
+  width: 16px;
+  height: 16px;
+}
+.tab-new:hover {
+  background: var(--hover-overlay);
+  color: var(--screen-fg);
+}
+.pos-left .tab-new {
+  width: 100%;
+}
+
+.strip-actions {
+  display: flex;
+  gap: 2px;
+  flex-shrink: 0;
+}
+.pos-top .strip-actions {
+  margin-left: auto;
+}
+.pos-left .strip-actions {
+  margin-top: auto;
+  justify-content: center;
+}
+
+.strip-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: none;
+  background: transparent;
+  color: var(--key-fg-dim);
+  border-radius: 6px;
+  cursor: pointer;
+}
+.strip-btn:hover {
+  background: var(--hover-overlay);
+  color: var(--screen-fg);
+}
+.strip-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.editor-pane {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+  min-width: 0;
+}
+
+.editor {
+  flex: 1;
+  width: 100%;
+  resize: none;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--screen-fg);
+  padding: 12px 14px;
+  font-family: var(--editor-font-family, "Cascadia Code", "Consolas", ui-monospace, monospace);
+  font-size: var(--editor-font-size, 14px);
+  line-height: 1.5;
+  user-select: text;
+  white-space: pre-wrap;
+  overflow: auto;
+  tab-size: 4;
+}
+.editor.nowrap {
+  white-space: pre;
+  overflow-x: auto;
+}
+
+.statusbar {
+  display: flex;
+  gap: 18px;
+  flex-shrink: 0;
+  height: 26px;
+  align-items: center;
+  padding: 0 14px;
+  border-top: 1px solid var(--border);
+  background: rgb(var(--bg-rgb) / var(--bg-alpha, 1));
+  font-size: 12px;
+  color: var(--muted);
+}
+.status-cell {
+  white-space: nowrap;
+}
+.status-right {
+  margin-left: auto;
+}
+/* The active file's path, pinned left; long paths truncate (hover shows the
+   full path) instead of pushing the metrics off screen. */
+.status-file {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+  flex-shrink: 1;
+}
+/* A failed open/save, kept discreet in the status bar (truncated; hover for
+   the full message). */
+.status-error {
+  color: var(--danger);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+/* Unsaved-changes confirm dialog ------------------------------------------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.modal {
+  width: min(380px, 100%);
+  background: var(--panel-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+}
+.modal-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.modal-msg {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--key-fg-dim);
+  margin-bottom: 18px;
+}
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+.btn-ghost {
+  background: transparent;
+  color: var(--screen-fg);
+  border: 1px solid var(--border);
+}
+.btn-ghost:hover {
+  background: var(--hover-overlay);
+}
+
+/* Font pickers in Settings ------------------------------------------------- */
+.select {
+  appearance: none;
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--screen-fg);
+  padding: 7px 10px;
+  font-size: 13px;
+  cursor: pointer;
+  min-width: 190px;
+}
+.select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.stepper {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.step-btn {
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--panel-bg);
+  color: var(--screen-fg);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+}
+.step-btn:hover {
+  background: var(--panel-hover);
+}
+.step-value {
+  min-width: 52px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--screen-fg);
+}
+
+.font-preview {
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 14px;
+  color: var(--screen-fg);
+  line-height: 1.3;
+  /* Grows with the selected font size; wraps instead of being clipped so the
+     scaling is always visible. */
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* Panels (Options / API) --------------------------------------------------- */
+.view--panel {
+  overflow: hidden;
+}
+
+.subheader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px 10px;
+  flex-shrink: 0;
+}
+
+.subheader-title {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.panel-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--screen-fg);
+  cursor: pointer;
+}
+
+.icon-btn:hover {
+  background: var(--hover-overlay);
+}
+
+.icon-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.icon-btn.small {
+  width: 28px;
+  height: 28px;
+}
+
+.icon-btn.small svg {
+  width: 16px;
+  height: 16px;
+}
+
+.icon-btn.danger:hover {
+  color: var(--danger);
+}
+
+/* Rows --------------------------------------------------------------------- */
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 14px;
+  background: var(--panel-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--screen-fg);
+  font-size: 14px;
+  text-align: left;
+}
+
+.row--nav {
+  cursor: pointer;
+}
+
+.row--nav:hover {
+  background: var(--panel-hover);
+}
+
+.row-label {
+  font-size: 14px;
+}
+
+.row-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-align: left;
+}
+
+.row-desc {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.section-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  padding: 4px 2px 0;
+}
+
+.about {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.about-desc {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--key-fg-dim);
+  padding: 0 2px;
+}
+
+.about-version {
+  font-size: 12px;
+  color: var(--muted);
+  padding: 2px 2px 0;
+}
+
+.pin-hint {
+  padding: 4px 2px 8px;
+}
+
+.chevron {
+  width: 20px;
+  height: 20px;
+  color: var(--muted);
+}
+
+/* Segmented control -------------------------------------------------------- */
+.seg {
+  display: inline-flex;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.seg-btn {
+  border: none;
+  background: transparent;
+  color: var(--key-fg-dim);
+  padding: 6px 14px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.seg-btn:hover {
+  background: var(--hover-overlay);
+}
+
+.seg-btn.active {
+  background: var(--accent);
+  color: var(--accent-fg);
+}
+
+/* Switch ------------------------------------------------------------------- */
+.switch-row {
+  cursor: pointer;
+}
+
+.switch {
+  appearance: none;
+  position: relative;
+  width: 40px;
+  height: 20px;
+  border-radius: 10px;
+  border: 1px solid var(--switch-stroke);
+  background: transparent;
+  cursor: pointer;
+  transition: background 100ms ease, border-color 100ms ease;
+  flex-shrink: 0;
+}
+
+.switch::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 3px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--switch-thumb);
+  transform: translateY(-50%);
+  transition: transform 100ms ease, background 100ms ease;
+}
+
+.switch:hover {
+  border-color: var(--switch-stroke-hover);
+}
+
+.switch:checked {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.switch:checked::before {
+  background: #ffffff;
+  transform: translateY(-50%) translateX(20px);
+}
+
+.switch:checked:hover {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+}
+
+/* Slider (Fluent-ish range) ------------------------------------------------ */
+.slider {
+  appearance: none;
+  width: 130px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--switch-stroke);
+  cursor: pointer;
+  outline: none;
+  flex-shrink: 0;
+}
+
+.slider::-webkit-slider-thumb {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  transition: transform 80ms ease;
+}
+
+.slider::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
+}
+
+.slider::-webkit-slider-thumb:active {
+  background: var(--accent-hover);
+}
+
+/* API server panel --------------------------------------------------------- */
+.api-status {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.play-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 18px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  background: var(--accent);
+  color: var(--accent-fg);
+}
+
+.play-btn:hover:not(:disabled) {
+  background: var(--accent-hover);
+}
+
+.play-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.play-btn.running {
+  background: #c42b1c;
+  color: #fff;
+}
+
+.play-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 10px 18px;
+  border-radius: 8px;
+  background: var(--panel-bg);
+  border: 1px solid var(--border);
+  color: var(--muted);
+}
+
+.status-pill.on {
+  color: #3fbf6f;
+  border-color: #3fbf6f66;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.field-label {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.ip-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--panel-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.ip-table td {
+  padding: 8px 12px;
+  font-size: 13px;
+  border-bottom: 1px solid var(--border);
+}
+
+.ip-table tr:last-child td {
+  border-bottom: none;
+}
+
+.ip-actions {
+  width: 40px;
+  text-align: right;
+}
+
+.add-row {
+  display: flex;
+  gap: 8px;
+}
+
+.text-input {
+  flex: 1;
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px 10px;
+  color: var(--screen-fg);
+  font-size: 13px;
+}
+
+.text-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.btn {
+  border: none;
+  border-radius: 6px;
+  background: var(--accent);
+  color: var(--accent-fg);
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background: var(--accent-hover);
+}
+
+.copy-field {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.value-box {
+  flex: 1;
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 13px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  user-select: text;
+}
+
+.hint {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.field-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.instructions-box {
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 10px 12px;
+  font-size: 12px;
+  line-height: 1.6;
+  white-space: pre;
+  overflow-x: auto;
+  user-select: text;
+  margin: 0;
+}
+
+.copied {
+  font-size: 12px;
+  color: #3fbf6f;
+}
+
+.err {
+  font-size: 12px;
+  color: var(--danger);
+}
+
+.mono {
+  font-family: "Cascadia Code", "Consolas", ui-monospace, monospace;
+}
+
+.muted {
+  color: var(--muted);
+  font-size: 13px;
+}

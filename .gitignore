@@ -1,0 +1,31 @@
+# Build output
+/build/bin/
+/build/darwin/Info*.plist
+/frontend/dist/
+/frontend/node_modules/
+node_modules/
+
+# Wails / Go
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Editors / OS
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Frontend caches
+frontend/package.json.md5
+*.local
+
+# stray root binary from `go build .`
+/go-notepad
+
+# Python
+*.pyc

@@ -1,0 +1,40 @@
+<!-- go-notepad icon concept: blue Fluent-style app tile with a tabbed editor card.
+     This is intentionally different from the monochrome Fluent Notepad glyph:
+     fewer thin outlines, larger solid shapes, and the app's blue accent. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <defs>
+    <linearGradient id="tile" x1="142" y1="112" x2="890" y2="928" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#4CC2FF"/>
+      <stop offset="0.48" stop-color="#0A7DDB"/>
+      <stop offset="1" stop-color="#005FB8"/>
+    </linearGradient>
+    <linearGradient id="paper" x1="240" y1="206" x2="784" y2="840" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#ECF8FF"/>
+    </linearGradient>
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="24" stdDeviation="24" flood-color="#00345E" flood-opacity="0.28"/>
+    </filter>
+  </defs>
+
+  <rect x="64" y="64" width="896" height="896" rx="206" fill="url(#tile)"/>
+
+  <g filter="url(#softShadow)">
+    <!-- Main editor surface -->
+    <rect x="196" y="218" width="632" height="610" rx="76" fill="url(#paper)"/>
+
+    <!-- Tab strip: active tab + two inactive tabs -->
+    <rect x="244" y="268" width="176" height="76" rx="30" fill="#005FB8"/>
+    <rect x="442" y="278" width="138" height="58" rx="24" fill="#CBEFFF"/>
+    <rect x="602" y="278" width="138" height="58" rx="24" fill="#DDF6FF"/>
+
+    <!-- Active tab name line -->
+    <rect x="284" y="298" width="96" height="16" rx="8" fill="#FFFFFF" opacity="0.96"/>
+
+    <!-- Editor/content lines - intentionally chunky so it stays sharp in Dock -->
+    <rect x="252" y="424" width="462" height="36" rx="18" fill="#005FB8" opacity="0.92"/>
+    <rect x="252" y="524" width="520" height="36" rx="18" fill="#0A7DDB" opacity="0.86"/>
+    <rect x="252" y="624" width="360" height="36" rx="18" fill="#005FB8" opacity="0.82"/>
+    <rect x="252" y="704" width="250" height="36" rx="18" fill="#0A7DDB" opacity="0.72"/>
+  </g>
+</svg>

@@ -1,0 +1,15 @@
+[Desktop Entry]
+Type=Application
+Name=go-Notepad
+Comment=A Windows 11-style tabbed notepad built with Go + Wails
+# __EXEC__ and __ICON__ are filled in at install time by `go-notepad -install`.
+# %f passes the file chosen in "Open with" as the first argument, which the app
+# opens in a tab; MimeType registers it as a text/plain handler.
+Exec=__EXEC__ %f
+Icon=__ICON__
+Terminal=false
+Categories=Utility;TextEditor;
+MimeType=text/plain;
+# Must match linux.Options.ProgramName in main.go so GNOME/Wayland maps the
+# running window to this .desktop file and shows its icon in the dock.
+StartupWMClass=go-notepad
