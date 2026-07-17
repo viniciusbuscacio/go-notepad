@@ -12,7 +12,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/viniciusbuscacio/go-notepad/internal/apiserver"
+	apiserver "github.com/viniciusbuscacio/go-apiserver"
 	"github.com/viniciusbuscacio/go-notepad/internal/settings"
 	updater "github.com/viniciusbuscacio/go-updates"
 	wruntime "github.com/wailsapp/wails/v2/pkg/runtime"

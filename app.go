@@ -6,11 +6,12 @@ import (
 	"fmt"
 	"math/rand/v2"
 	"net"
+	"net/http"
 	"os"
 	"path/filepath"
 	"sync"
 
-	"github.com/viniciusbuscacio/go-notepad/internal/apiserver"
+	apiserver "github.com/viniciusbuscacio/go-apiserver"
 	"github.com/viniciusbuscacio/go-notepad/internal/notes"
 	"github.com/viniciusbuscacio/go-notepad/internal/settings"
 	updater "github.com/viniciusbuscacio/go-updates"
@@ -52,15 +53,24 @@ func (a *App) snapshot() settings.Settings {
 func NewApp() *App {
 	a := &App{}
 	a.ui = newUIBridge(a)
-	a.server = apiserver.New(a.textStats, a.appInfo, a.ui)
+	a.server = apiserver.New(a.appInfo, a.ui)
+	a.server.HandleExtra("/v1/stats", a.handleStats)
 	a.server.HandleExtra("/v1/update", a.handleUpdate)
 	return a
 }
 
-// textStats is the app-specific direct operation exposed at POST /v1/stats:
-// given a block of text, return its line/word/character counts.
-func (a *App) textStats(text string) (any, error) {
-	return notes.Compute(text), nil
+// handleStats is the app's domain endpoint (POST /v1/stats): given a block of
+// text, return its line/word/character counts — the same engine that fills
+// the status bar. Stateless: it never touches the open document.
+func (a *App) handleStats(w http.ResponseWriter, r *http.Request) {
+	var req struct {
+		Text string `json:"text"`
+	}
+	if !apiserver.DecodeJSON(w, r, &req) {
+		return
+	}
+	// An empty string is a valid document (0 words), so 'text' is not required.
+	apiserver.WriteJSON(w, http.StatusOK, notes.Compute(req.Text))
 }
 
 // UIAck is called by the frontend to report the resulting screen state after
@@ -340,6 +350,7 @@ func (a *App) startServer() error {
 		Allowlist: cfg.APIAllowlist,
 		TLS:       cfg.APIHTTPS,
 		CertDir:   dir,
+		AppName:   "go-notepad",
 	})
 }
 

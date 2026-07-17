@@ -98,8 +98,13 @@ Two design points worth keeping when reusing this:
 1. Replace `internal/notes` with your engine (pure Go, unit-tested).
 2. Replace the Vue views with your UI; keep `data-testid` on every control.
 3. Rewrite `appInfo()` in `appinfo.go` to describe the new controls and actions.
-4. Keep `internal/apiserver`, `internal/settings`, `uibridge.go` and the
-   security model as they are — that is the framework.
+4. Keep the shared libraries and the security model as they are — that is the
+   framework: the REST control plane comes from
+   [go-apiserver](https://github.com/viniciusbuscacio/go-apiserver), the
+   self-update from
+   [go-updates](https://github.com/viniciusbuscacio/go-updates);
+   `internal/settings` and `uibridge.go` stay app-local. Register your domain
+   endpoints with `HandleExtra` (see `handleStats` in `app.go`).
 
 ## Platform notes
 
