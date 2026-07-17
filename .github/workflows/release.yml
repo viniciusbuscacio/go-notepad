@@ -87,7 +87,7 @@ jobs:
           dmg="go-notepad-${GITHUB_REF_NAME}-macos-arm64.dmg"
           python3 -m venv /tmp/dmgvenv
           /tmp/dmgvenv/bin/pip -q install ds-store mac-alias
-          go run github.com/viniciusbuscacio/go-installer/cmd/mkdmg@v0.1.1 \
+          go run github.com/viniciusbuscacio/go-installer/cmd/mkdmg@v0.1.2 \
             -app build/bin/go-notepad.app -volname go-notepad -out "$dmg" \
             -python /tmp/dmgvenv/bin/python3
           { echo "ASSET<<EOF"; echo "$asset"; echo "$dmg"; echo "EOF"; } >> "$GITHUB_ENV"
