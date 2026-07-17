@@ -13,7 +13,7 @@ import (
 	"github.com/viniciusbuscacio/go-notepad/internal/apiserver"
 	"github.com/viniciusbuscacio/go-notepad/internal/notes"
 	"github.com/viniciusbuscacio/go-notepad/internal/settings"
-	"github.com/viniciusbuscacio/go-notepad/internal/updater"
+	updater "github.com/viniciusbuscacio/go-updates"
 	wruntime "github.com/wailsapp/wails/v2/pkg/runtime"
 )
 

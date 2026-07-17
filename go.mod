@@ -1,8 +1,11 @@
 module github.com/viniciusbuscacio/go-notepad
 
-go 1.22.0
+go 1.23
 
-require github.com/wailsapp/wails/v2 v2.12.0
+require (
+	github.com/viniciusbuscacio/go-updates v0.1.0
+	github.com/wailsapp/wails/v2 v2.12.0
+)
 
 require (
 	git.sr.ht/~jackmordaunt/go-toast/v2 v2.0.3 // indirect

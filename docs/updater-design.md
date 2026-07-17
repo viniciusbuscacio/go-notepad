@@ -3,9 +3,12 @@
 Status: implemented (17/jul/2026). Decisions below were settled with Vinicius
 on 17/jul/2026. Deviations from the original draft, made during implementation:
 
-- The binary swap is hand-rolled in `internal/updater` (rename dance with
-  rollback) instead of pulling in `minio/selfupdate` — no new dependency, and
-  the swap is covered by unit tests.
+- The binary swap is hand-rolled (rename dance with rollback) instead of
+  pulling in `minio/selfupdate`, and the swap is covered by unit tests.
+- The mechanics originally lived in `internal/updater` and were later
+  extracted to the shared family library
+  [go-updates](https://github.com/viniciusbuscacio/go-updates) (v0.2.1 of
+  this app). This adapter (`update.go`) and the UI stay app-local by design.
 - The settings fields are flat (`updateAutoCheck`, `updateSkippedVersion`,
   `updateLaterUntil`, `updateLastAutoCheck`), matching the existing flat
   `settings.json`, not a nested `updates` object.
