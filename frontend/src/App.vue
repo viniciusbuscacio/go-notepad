@@ -67,19 +67,26 @@ function onTitlebarMousedown(e: MouseEvent) {
       @mousedown="onTitlebarMousedown"
     >
       <div class="brand">
-        <!-- The same note glyph as build/appicon-source.svg, stroked with
-             currentColor so it follows the titlebar color in both themes. -->
+        <!-- The same note glyph as build/appicon-source.svg (Lucide
+             "notepad-text", ISC licence), stroked with currentColor so it
+             follows the titlebar color in both themes. -->
         <svg
           class="app-glyph"
-          viewBox="184 176 656 656"
+          viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
+          stroke-width="2"
           stroke-linecap="round"
+          stroke-linejoin="round"
           aria-hidden="true"
         >
-          <rect x="272" y="260" width="480" height="520" rx="62" stroke-width="64" />
-          <path stroke-width="64" d="M395 228v97M512 228v97M629 228v97" />
-          <path stroke-width="35" d="M400 443h102M400 547h233M400 649h233" />
+          <path d="M8 2v4" />
+          <path d="M12 2v4" />
+          <path d="M16 2v4" />
+          <rect width="16" height="18" x="4" y="4" rx="2" />
+          <path d="M8 10h6" />
+          <path d="M8 14h8" />
+          <path d="M8 18h5" />
         </svg>
         <span class="titlebar-title">go-Notepad</span>
       </div>
