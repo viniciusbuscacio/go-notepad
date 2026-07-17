@@ -13,6 +13,7 @@ import (
 	"github.com/viniciusbuscacio/go-notepad/internal/apiserver"
 	"github.com/viniciusbuscacio/go-notepad/internal/notes"
 	"github.com/viniciusbuscacio/go-notepad/internal/settings"
+	"github.com/viniciusbuscacio/go-notepad/internal/updater"
 	wruntime "github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
@@ -34,6 +35,10 @@ type App struct {
 	cfg    settings.Settings
 	server *apiserver.Server
 	ui     *uiBridge
+	// In-app updater state (see update.go): the last check's snapshot and the
+	// release it found, kept so Install doesn't need to re-check.
+	updState   UpdateInfo
+	updRelease *updater.Release
 }
 
 // snapshot returns a copy of the current settings; callers work on the copy so
@@ -48,6 +53,7 @@ func NewApp() *App {
 	a := &App{}
 	a.ui = newUIBridge(a)
 	a.server = apiserver.New(a.textStats, a.appInfo, a.ui)
+	a.server.HandleExtra("/v1/update", a.handleUpdate)
 	return a
 }
 
@@ -70,6 +76,10 @@ func (a *App) startup(ctx context.Context) {
 	a.cfg = cfg
 	a.mu.Unlock()
 	go fixTaskbarIcon(appTitle)
+	// Sweep the ".old" binary a previous self-update parked, then — if the
+	// user opted in — check for a newer release in the background.
+	a.updateClient().CleanupOld()
+	go a.maybeAutoCheck()
 	if cfg.APIAutoStart {
 		if err := a.startServer(); err != nil {
 			// No UI is up yet to show this, so at least leave a trace on stderr

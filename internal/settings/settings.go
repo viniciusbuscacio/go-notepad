@@ -23,6 +23,13 @@ type Settings struct {
 	APIKey       string   `json:"apiKey"`
 	APIAllowlist []string `json:"apiAllowlist"` // CIDRs, e.g. "127.0.0.1/32"
 	APIHTTPS     bool     `json:"apiHttps"`     // serve HTTPS instead of HTTP
+
+	// In-app updater. AutoCheck is opt-in: the app makes no network call the
+	// user didn't ask for. Timestamps are RFC3339; empty means "never"/"unset".
+	UpdateAutoCheck  bool   `json:"updateAutoCheck"`     // check GitHub once a day on launch
+	UpdateSkipped    string `json:"updateSkippedVersion"` // tag the user chose to skip (e.g. "v0.2.0")
+	UpdateLaterUntil string `json:"updateLaterUntil"`     // "Later" cooldown: no notify before this instant
+	UpdateLastCheck  string `json:"updateLastAutoCheck"`  // last automatic check, for the once-a-day throttle
 }
 
 const (

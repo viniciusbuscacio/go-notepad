@@ -938,6 +938,63 @@ body.is-resizing-tabstrip * {
   background: var(--accent-hover);
 }
 
+.btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+/* Updates (Settings) -------------------------------------------------------- */
+.update-card {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.update-card-title {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.update-notes {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 6px;
+  background: var(--input-bg);
+  color: var(--key-fg-dim);
+  font: 12px/1.5 "Cascadia Mono", Consolas, monospace;
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 160px;
+  overflow-y: auto;
+}
+
+.update-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* Update-available dot on the title-bar gear */
+.win-btn {
+  position: relative;
+}
+
+.update-dot {
+  position: absolute;
+  top: 5px;
+  right: 7px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  pointer-events: none;
+}
+
 .copy-field {
   display: flex;
   align-items: center;

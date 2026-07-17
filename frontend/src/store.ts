@@ -12,7 +12,14 @@ import {
   LoadSession,
   OpenPath,
   ConsumePendingFile,
+  GetUpdateInfo,
+  CheckForUpdates,
+  InstallUpdate,
+  SkipUpdateVersion,
+  RemindUpdateLater,
+  SetUpdateAutoCheck,
 } from "../wailsjs/go/main/App";
+import { EventsOn } from "../wailsjs/runtime/runtime";
 
 export type View = "editor" | "options" | "api";
 export type TabPosition = "top" | "left";
@@ -258,6 +265,113 @@ export function go(view: View) {
   ui.view = view;
 }
 
+// ---- in-app updater --------------------------------------------------------
+// Mirror of the Go-side UpdateInfo (update.go). Go owns every rule (what is
+// newer, when to notify); this store only renders it. Kept in sync two ways:
+// explicit awaited calls below, plus the "update:state" event Go broadcasts on
+// every change (auto-check results, install progress).
+
+export interface UpdateState {
+  checking: boolean;
+  installing: boolean;
+  progress: string; // downloading | verifying | applying
+  available: boolean;
+  version: string;
+  notes: string;
+  current: string;
+  checkedAt: string;
+  error: string;
+  notify: boolean;
+}
+
+export const update = reactive<UpdateState & { autoCheck: boolean; seen: boolean }>({
+  checking: false,
+  installing: false,
+  progress: "",
+  available: false,
+  version: "",
+  notes: "",
+  current: "",
+  checkedAt: "",
+  error: "",
+  notify: false,
+  // Local additions: the auto-check preference, and whether the user has
+  // checked manually this session (a manual check shows the result card even
+  // for a version that was skipped/snoozed before).
+  autoCheck: false,
+  seen: false,
+});
+
+function applyUpdateState(s: UpdateState) {
+  Object.assign(update, s);
+}
+
+export function initUpdateEvents() {
+  EventsOn("update:state", (s: UpdateState) => applyUpdateState(s));
+}
+
+export async function checkForUpdates() {
+  update.seen = true;
+  busyInc();
+  try {
+    applyUpdateState(await CheckForUpdates());
+  } catch {
+    /* the Go side reported what it could via the event */
+  } finally {
+    busyDec();
+  }
+}
+
+// installUpdate flushes the session first (same as quitting), then hands over
+// to Go: on success the app restarts itself and this call never resolves.
+export async function installUpdate() {
+  busyInc();
+  try {
+    await flushSession();
+    await InstallUpdate();
+  } catch {
+    /* failure state (update.error) arrives via the update:state event */
+  } finally {
+    busyDec();
+  }
+}
+
+export async function skipUpdate() {
+  update.seen = false;
+  busyInc();
+  try {
+    await SkipUpdateVersion();
+  } catch {
+    /* best effort */
+  } finally {
+    busyDec();
+  }
+}
+
+export async function remindUpdateLater() {
+  update.seen = false;
+  busyInc();
+  try {
+    await RemindUpdateLater();
+  } catch {
+    /* best effort */
+  } finally {
+    busyDec();
+  }
+}
+
+export async function setUpdateAutoCheck(on: boolean) {
+  update.autoCheck = on;
+  busyInc();
+  try {
+    await SetUpdateAutoCheck(on);
+  } catch {
+    /* best effort */
+  } finally {
+    busyDec();
+  }
+}
+
 // busyInc/busyDec bracket any async handler that changes visible state, so the
 // UI bridge knows when the screen has finished updating. Call busyInc()
 // synchronously before the first await, and busyDec() in a finally block.
@@ -330,6 +444,7 @@ export async function loadSettings() {
     notes.wordWrap = s.wordWrap !== false;
     notes.fontFamily = s.fontFamily || "mono";
     notes.fontSize = s.fontSize || FONT_SIZE_DEFAULT;
+    update.autoCheck = s.updateAutoCheck === true;
     applyFont();
   } catch {
     applyTheme("dark");
@@ -340,6 +455,14 @@ export async function loadSettings() {
     ui.version = await GetVersion();
   } catch {
     /* leave version empty if the backend isn't reachable */
+  }
+  try {
+    // Snapshot from Go (a startup auto-check may already have run) + live
+    // updates from here on.
+    initUpdateEvents();
+    applyUpdateState(await GetUpdateInfo());
+  } catch {
+    /* updater state stays at its defaults */
   }
   // Reopen the previous session's tabs; fall back to a single blank document,
   // like a fresh Notepad window. Enable autosave only after this is done.

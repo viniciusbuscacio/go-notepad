@@ -6,6 +6,8 @@ import {notes} from '../models';
 
 export function AddAllowlistEntry(arg1:string):Promise<Array<string>>;
 
+export function CheckForUpdates():Promise<main.UpdateInfo>;
+
 export function ConsumePendingFile():Promise<string>;
 
 export function GetAPIFingerprint():Promise<string>;
@@ -20,13 +22,19 @@ export function GetAllowlist():Promise<Array<string>>;
 
 export function GetSettings():Promise<settings.Settings>;
 
+export function GetUpdateInfo():Promise<main.UpdateInfo>;
+
 export function GetVersion():Promise<string>;
+
+export function InstallUpdate():Promise<void>;
 
 export function LoadSession():Promise<string>;
 
 export function OpenFile():Promise<main.FileResult>;
 
 export function OpenPath(arg1:string):Promise<main.FileResult>;
+
+export function RemindUpdateLater():Promise<void>;
 
 export function RemoveAllowlistEntry(arg1:string):Promise<Array<string>>;
 
@@ -52,9 +60,13 @@ export function SetTabPosition(arg1:string):Promise<void>;
 
 export function SetTheme(arg1:string):Promise<void>;
 
+export function SetUpdateAutoCheck(arg1:boolean):Promise<void>;
+
 export function SetWordWrap(arg1:boolean):Promise<void>;
 
 export function ShuffleAPIPort():Promise<main.APIStatus>;
+
+export function SkipUpdateVersion():Promise<void>;
 
 export function StartAPIServer():Promise<main.APIStatus>;
 

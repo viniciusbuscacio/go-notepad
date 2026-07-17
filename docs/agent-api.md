@@ -69,6 +69,17 @@ POST /v1/stats   {"text":"hello world"}   ->   200 {"lines":1,"words":2,"chars":
 Stateless: it counts whatever text you send without touching the open document.
 An empty string is valid and returns all-zero counts.
 
+## Updates: `GET /v1/update`
+
+The in-app updater's snapshot: `{checking, installing, progress, available,
+version, notes, current, checkedAt, error, notify}`. `notify` is the badge
+rule (an update exists, not skipped, "Later" lapsed) — computed in Go so the
+UI and the API always agree. Drive the updater through the UI bridge:
+`update-check` (risk `external`) refreshes this snapshot; `update-install`
+(risk `destructive`) downloads, verifies against the release's
+`checksums.txt`, swaps the executable and **restarts the app — the API goes
+away mid-call**. `update-skip` and `update-later` silence the notice.
+
 ## Drive the real UI: `/v1/ui/*`
 
 These operate the actual frontend and return the resulting on-screen **state**

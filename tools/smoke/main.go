@@ -386,6 +386,40 @@ func main() {
 	ch.ok("empty key -> 400 missing_field",
 		st == 400 && errCode(body) == "missing_field", fmt.Sprintf("status=%d body=%v", st, body))
 
+	// --- in-app updater ---
+	// The snapshot endpoint must serve the documented shape, and pressing the
+	// Check button must settle into a structured outcome — "up to date",
+	// "available" or a clean error (e.g. offline) are all acceptable; a hang or
+	// an unstructured response is not. Point GO_NOTEPAD_UPDATE_URL at a stub
+	// when launching the app to run this without touching the real GitHub.
+	st, body, _ = c.get("/v1/update")
+	ch.ok("update snapshot reachable", st == 200, fmt.Sprintf("status=%d", st))
+	upd := asMap(body)
+	_, hasNotify := upd["notify"].(bool)
+	_, hasAvailable := upd["available"].(bool)
+	cur, _ := upd["current"].(string)
+	ch.ok("update snapshot has the contract fields", hasNotify && hasAvailable && cur != "",
+		fmt.Sprint(body))
+
+	c.press("open-settings")
+	st, _, _ = c.press("update-check")
+	ch.ok("pressing update-check is accepted", st == 200, fmt.Sprintf("status=%d", st))
+	deadline := time.Now().Add(20 * time.Second)
+	for {
+		_, body, _ = c.get("/v1/update")
+		upd = asMap(body)
+		if b, _ := upd["checking"].(bool); !b || time.Now().After(deadline) {
+			break
+		}
+		time.Sleep(300 * time.Millisecond)
+	}
+	checking, _ := upd["checking"].(bool)
+	updErr, _ := upd["error"].(string)
+	_, hasAvailable = upd["available"].(bool)
+	ch.ok("update check settles with a structured outcome",
+		!checking && (updErr != "" || hasAvailable), fmt.Sprint(upd))
+	c.press("back")
+
 	// --- disabled control ---
 	c.press("open-settings")
 	c.press("nav-api")

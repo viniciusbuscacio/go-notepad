@@ -102,8 +102,10 @@ func (a *App) appInfo() any {
 			"Every control carries a 'risk' level (safe, navigation, external, sensitive, destructive) — check it before pressing; e.g. window-close is destructive and save-file writes to disk. " +
 			"Errors are structured as {\"error\":{\"code\",\"message\",\"status\"}}; branch on 'code' (see the errors list). " +
 			"Pressing an unknown testid returns code unknown_testid (404); a disabled control returns disabled_control (409). " +
-			"The title-bar gear (open-settings) opens Settings; each panel has a back button.",
-		Capabilities: []string{"notes.stats", "ui.state", "ui.press", "ui.dblclick", "ui.key", "ui.input"},
+			"The title-bar gear (open-settings) opens Settings; each panel has a back button. " +
+			"Settings also hosts the in-app updater: press 'update-check' to query GitHub Releases (risk external) and read the outcome at GET /v1/update; " +
+			"'update-install' (risk destructive) downloads, verifies and applies the new version, then RESTARTS the app — the API goes away mid-call.",
+		Capabilities: []string{"notes.stats", "ui.state", "ui.press", "ui.dblclick", "ui.key", "ui.input", "updates"},
 		Errors: []errorInfo{
 			{Code: "invalid_json", Status: 400, Meaning: "request body is not valid JSON"},
 			{Code: "missing_field", Status: 400, Meaning: "a required field (testid / key) was empty or absent"},
@@ -119,6 +121,7 @@ func (a *App) appInfo() any {
 			{Method: "POST", Path: "/v1/stats", Body: map[string]string{"text": "hello world"}, Returns: map[string]int{"lines": 1, "words": 2, "chars": 11, "charsNoSpaces": 10}, Auth: "X-API-Key header"},
 			{Method: "GET", Path: "/v1/health", Returns: map[string]string{"status": "ok"}, Auth: "X-API-Key header"},
 			{Method: "GET", Path: "/v1/ax", Returns: "this document (app info + accessibility tree)", Auth: "X-API-Key header"},
+			{Method: "GET", Path: "/v1/update", Returns: "last update-check snapshot: {checking, installing, available, version, notes, current, checkedAt, error, notify}", Auth: "X-API-Key header"},
 			{Method: "GET", Path: "/v1/ui/state", Returns: "current on-screen state (view, tabs, editor text, ...)", Auth: "X-API-Key header"},
 			{Method: "POST", Path: "/v1/ui/press", Body: map[string]string{"testid": "new-tab"}, Returns: "resulting on-screen state", Auth: "X-API-Key header"},
 			{Method: "POST", Path: "/v1/ui/dblclick", Body: map[string]string{"testid": "titlebar"}, Returns: "resulting on-screen state (double-clicking the title bar maximizes/restores the window)", Auth: "X-API-Key header"},
@@ -167,6 +170,13 @@ func (a *App) appInfo() any {
 						{Role: "button", Name: "Font bigger", Testid: "font-size-inc", Action: "increase the editor font size (also Ctrl++ or Ctrl+wheel in the editor)", Risk: riskSafe},
 						{Role: "text", Name: "Font preview", Testid: "font-preview", Description: "sample line rendered in the selected font and size"},
 						{Role: "button", Name: "REST API Server", Testid: "nav-api", Action: "open the REST API server settings", Risk: riskNavigation},
+						{Role: "switch", Name: "Automatic update checks", Testid: "update-autocheck", Action: "toggle checking GitHub for a newer release once a day on launch (off by default; checking calls the network)", Risk: riskSafe},
+						{Role: "button", Name: "Check for updates", Testid: "update-check", Action: "ask GitHub Releases for a newer version right now; the result (including 'notify') is also served at GET /v1/update", Risk: riskExternal},
+						{Role: "status", Name: "Update status", Testid: "update-status", Description: "outcome of the last update check: up to date, update available, or the error"},
+						{Role: "text", Name: "Release notes", Testid: "update-notes", Description: "the newer version's release notes; present only while an update is available"},
+						{Role: "button", Name: "Install and restart", Testid: "update-install", Action: "download the new version, verify its checksum, replace the app and restart it; present only while an update is available", Risk: riskDestructive},
+						{Role: "button", Name: "Skip this version", Testid: "update-skip", Action: "silence this particular version (a newer one will notify again); present only while an update is available", Risk: riskSafe},
+						{Role: "button", Name: "Remind me later", Testid: "update-later", Action: "snooze the update notice for 7 days; present only while an update is available", Risk: riskSafe},
 						{Role: "link", Name: "GitHub", Testid: "open-github", Action: "open the project on GitHub in the default browser", Risk: riskExternal},
 						{Role: "text", Name: "Version", Testid: "app-version", Description: "the app version (About section)"},
 					},
