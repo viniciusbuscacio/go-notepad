@@ -35,39 +35,33 @@ lives in Go.**
 
 # Download
 
-Grab a prebuilt binary from the [**Releases**](https://github.com/viniciusbuscacio/go-notepad/releases/latest) page.
-Each release provides one download per platform:
+One installer per platform, from the [**Releases**](https://github.com/viniciusbuscacio/go-notepad/releases/latest) page:
 
-### 🪟 Windows (x64)
+| Platform | Download | Then |
+|---|---|---|
+| 🪟 Windows (x64) | **`go-notepad-vX.Y.Z-windows-amd64-setup.exe`** | Run it — next → next → finish. Run it again anytime to reinstall or uninstall. |
+| 🍏 macOS (Apple Silicon) | **`go-notepad-vX.Y.Z-macos-arm64.dmg`** | Open it and drag **go-Notepad** to **Applications** (then see the first-launch note below). |
+| 🐧 Linux (x64) | **`go-notepad-vX.Y.Z-linux-amd64.tar.gz`** | Extract, then `./go-notepad -install` — dock icon and app-grid entry, under `~/.local`, no root. |
 
-- Download **`go-notepad-vX.Y.Z-windows-amd64.zip`**
-- Unzip and run **`go-notepad.exe`**.
+<details>
+<summary><b>Notes</b> — portable Windows zip · macOS first launch · Linux dependency</summary>
 
-### 🍏 macOS (Apple Silicon / arm64)
-
-- Download **`go-notepad-vX.Y.Z-macos-arm64.zip`** and unzip it.
-- The app is **not notarized**, so macOS blocks it with *"Apple could not verify go-Notepad is
-  free of malware."* Run this once in Terminal, then open the app normally:
+- **Windows without installing:** the `...-windows-amd64.zip` contains a portable
+  `go-notepad.exe` — unzip and run, no installation.
+- **macOS first launch:** the app is **not notarized**, so macOS blocks it with
+  *"Apple could not verify go-Notepad is free of malware."* Run this once in
+  Terminal, then open it normally:
   ```bash
-  xattr -dr com.apple.quarantine ~/Downloads/go-notepad-vX.Y.Z-macos-arm64/go-notepad.app
+  xattr -dr com.apple.quarantine /Applications/go-notepad.app
   ```
-  (On recent macOS the *System Settings → Privacy & Security → Open Anyway* button often
-  doesn't work for un-notarized apps — the command above is the reliable fix.)
-- The downloaded `.zip` also contains a `README.txt` with this step.
+  (The *Privacy & Security → Open Anyway* button often doesn't work for
+  un-notarized apps — the command above is the reliable fix. A `README.txt`
+  inside the DMG carries this same step.)
+- **Linux:** `./go-notepad` runs it directly; `-uninstall` removes the desktop
+  integration. Runtime dependency: WebKitGTK 4.1 —
+  `sudo apt install libwebkit2gtk-4.1-0` (Debian/Ubuntu/Zorin).
 
-### 🐧 Linux (x64)
-
-- Download **`go-notepad-vX.Y.Z-linux-amd64.tar.gz`**
-- Extract it, then run the binary once with `-install` to add the dock icon and
-  app-grid entry (installs under `~/.local`, no root; the icon and launcher are
-  embedded in the binary):
-  ```bash
-  tar -xzf go-notepad-vX.Y.Z-linux-amd64.tar.gz
-  cd go-notepad && ./go-notepad -install
-  ```
-  (Run `./go-notepad` to launch it directly, or `./go-notepad -uninstall` to
-  remove the desktop integration.)
-- Requires WebKitGTK 4.1 at runtime: `sudo apt install libwebkit2gtk-4.1-0` (Debian/Ubuntu/Zorin).
+</details>
 
 Or build it yourself — see [Development](#development).
 
