@@ -66,7 +66,7 @@ func Default() Settings {
 	return Settings{
 		Theme:        "dark",
 		Opacity:      100,
-		TabPosition:  "top",
+		TabPosition:  "left",
 		WordWrap:     true,
 		FontFamily:   "mono",
 		FontSize:     14,

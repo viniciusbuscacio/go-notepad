@@ -117,7 +117,7 @@ export const caretPositions = new Map<number, { start: number; end: number }>();
 export const notes = reactive({
   tabs: [] as Tab[],
   activeId: -1,
-  tabPosition: "top" as TabPosition,
+  tabPosition: "left" as TabPosition,
   wordWrap: true,
   fontFamily: "mono",
   fontSize: FONT_SIZE_DEFAULT,
@@ -440,7 +440,7 @@ export async function loadSettings() {
     const s = await GetSettings();
     applyTheme(s.theme || "dark");
     applyOpacity(s.opacity || 100);
-    notes.tabPosition = s.tabPosition === "left" ? "left" : "top";
+    notes.tabPosition = s.tabPosition === "top" ? "top" : "left";
     notes.wordWrap = s.wordWrap !== false;
     notes.fontFamily = s.fontFamily || "mono";
     notes.fontSize = s.fontSize || FONT_SIZE_DEFAULT;
