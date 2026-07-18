@@ -38,6 +38,28 @@ export namespace main {
 	        this.canceled = source["canceled"];
 	    }
 	}
+	export class InstallerState {
+	    mode: string;
+	    dir: string;
+	    version: string;
+	    installedVersion: string;
+	    url: string;
+	    license: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new InstallerState(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.mode = source["mode"];
+	        this.dir = source["dir"];
+	        this.version = source["version"];
+	        this.installedVersion = source["installedVersion"];
+	        this.url = source["url"];
+	        this.license = source["license"];
+	    }
+	}
 	export class UpdateInfo {
 	    checking: boolean;
 	    installing: boolean;

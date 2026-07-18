@@ -22,19 +22,36 @@ var appIcon []byte
 const appTitle = "go-Notepad"
 
 func main() {
-	// Command-line actions (install/uninstall/help) run without the GUI.
-	if handleCLI(os.Args[1:]) {
+	// When this process is the uninstaller's %TEMP% helper copy, do the
+	// removal and exit before any UI machinery starts.
+	if installerCleanup() {
 		return
 	}
 
 	app := NewApp()
+	app.instMode, app.instDir = installerBoot()
+
+	// Command-line actions (install/uninstall/help, file to open) run without
+	// the GUI — but only on a normal launch: in installer modes the argv is
+	// the wizard's own (Apps & Features passes --uninstall).
+	if app.instMode == "" && handleCLI(os.Args[1:]) {
+		return
+	}
+
+	// The editor is a roomy resizable window; the wizard is a fixed landscape one.
+	width, height, minWidth, minHeight := 760, 560, 480, 420
+	title := appTitle
+	if app.instMode != "" {
+		width, height, minWidth, minHeight = 600, 500, 600, 500
+		title = appTitle + " Setup"
+	}
 
 	err := wails.Run(&options.App{
-		Title:     appTitle,
-		Width:     760,
-		Height:    560,
-		MinWidth:  480,
-		MinHeight: 420, // fits the tab strip, editor and status bar comfortably
+		Title:     title,
+		Width:     width,
+		Height:    height,
+		MinWidth:  minWidth,
+		MinHeight: minHeight, // editor: fits the tab strip, editor and status bar comfortably
 		AssetServer: &assetserver.Options{
 			Assets: assets,
 		},

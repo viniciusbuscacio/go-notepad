@@ -40,6 +40,10 @@ type App struct {
 	// release it found, kept so Install doesn't need to re-check.
 	updState   UpdateInfo
 	updRelease *updater.Release
+	// Install wizard state (see installer.go / install_windows.go).
+	instMode string // "" | "wizard" | "maintenance" | "uninstall"
+	instDir  string // custom destination ("" = default; maintenance: the existing install)
+	instExe  string // installed exe path, once InstallerInstall ran
 }
 
 // snapshot returns a copy of the current settings; callers work on the copy so

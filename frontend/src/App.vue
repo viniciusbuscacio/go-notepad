@@ -8,9 +8,11 @@ import {
 } from "../wailsjs/runtime/runtime";
 import { ui, update, go, loadSettings, flushSession } from "./store";
 import { initUIBridge } from "./uibridge";
+import { InstallerState } from "../wailsjs/go/main/App";
 import NotepadView from "./views/NotepadView.vue";
 import OptionsView from "./views/OptionsView.vue";
 import ApiServerView from "./views/ApiServerView.vue";
+import InstallerView from "./views/InstallerView.vue";
 
 onMounted(async () => {
   // Apply persisted theme/opacity BEFORE the window is shown, then reveal it
@@ -18,6 +20,10 @@ onMounted(async () => {
   // user never sees the default-theme flash / repaint flicker on Linux.
   await loadSettings();
   initUIBridge();
+  // A non-empty installer mode (Windows: wizard or the Apps & Features
+  // uninstall) replaces the whole app with the installer view.
+  const inst = await InstallerState();
+  if (inst.mode) ui.view = "installer";
   // Wait for Vue to flush the DOM with the correct theme/opacity, then reveal
   // the window. We must NOT use requestAnimationFrame here: WebKitGTK pauses
   // rAF callbacks while the window is hidden (StartHidden), so it would never
@@ -45,6 +51,8 @@ async function quitApp() {
 // controls (minimize/maximize/close) are excluded so they keep their behaviour.
 let lastTitleDown = 0;
 function onTitlebarMousedown(e: MouseEvent) {
+  // The wizard window is fixed-size: no double-click maximize there.
+  if (ui.view === "installer") return;
   if ((e.target as HTMLElement).closest(".win-controls")) {
     lastTitleDown = 0;
     return;
@@ -93,6 +101,7 @@ function onTitlebarMousedown(e: MouseEvent) {
 
       <div class="win-controls" style="--wails-draggable: no-drag">
         <button
+          v-if="ui.view !== 'installer'"
           class="win-btn"
           :title="update.notify ? 'Settings — update available' : 'Settings'"
           data-testid="open-settings"
@@ -112,6 +121,7 @@ function onTitlebarMousedown(e: MouseEvent) {
           &#x2013;
         </button>
         <button
+          v-if="ui.view !== 'installer'"
           class="win-btn"
           title="Maximize"
           data-testid="window-maximize"
@@ -135,5 +145,6 @@ function onTitlebarMousedown(e: MouseEvent) {
     <NotepadView v-if="ui.view === 'editor'" />
     <OptionsView v-else-if="ui.view === 'options'" />
     <ApiServerView v-else-if="ui.view === 'api'" />
+    <InstallerView v-else-if="ui.view === 'installer'" />
   </div>
 </template>

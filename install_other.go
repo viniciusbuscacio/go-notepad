@@ -1,17 +1,24 @@
-//go:build !linux
+//go:build !windows
 
 package main
 
-import "runtime"
+// The install wizard is Windows-only (macOS ships a DMG, Linux has the CLI
+// install in desktop_linux.go). These stubs keep the App bindings — and so
+// the generated frontend API — identical on every OS; Mode "" keeps the
+// wizard hidden.
 
-// installApp is a no-op off Linux: the build already produces a self-contained
-// bundle/executable (a .app on macOS, a packaged .exe on Windows), so there is
-// nothing to register with the desktop environment.
-func installApp(uninstall bool) error {
-	if uninstall {
-		println("Nothing to uninstall on " + runtime.GOOS + ": go-Notepad is a self-contained app here.")
-		return nil
-	}
-	println("Nothing to install on " + runtime.GOOS + ": go-Notepad is a self-contained app here.")
-	return nil
+func installerCleanup() bool { return false }
+
+func installerBoot() (mode, dir string) { return "", "" }
+
+func (a *App) InstallerState() InstallerState { return InstallerState{} }
+
+func (a *App) InstallerChooseDir() string { return "" }
+
+func (a *App) InstallerInstall() string { return "not supported on this OS" }
+
+func (a *App) InstallerFinish(startMenu, desktop, launch bool) string {
+	return "not supported on this OS"
 }
+
+func (a *App) InstallerUninstall() string { return "not supported on this OS" }

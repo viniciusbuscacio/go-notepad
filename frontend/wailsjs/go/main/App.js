@@ -50,6 +50,26 @@ export function InstallUpdate() {
   return window['go']['main']['App']['InstallUpdate']();
 }
 
+export function InstallerChooseDir() {
+  return window['go']['main']['App']['InstallerChooseDir']();
+}
+
+export function InstallerFinish(arg1, arg2, arg3) {
+  return window['go']['main']['App']['InstallerFinish'](arg1, arg2, arg3);
+}
+
+export function InstallerInstall() {
+  return window['go']['main']['App']['InstallerInstall']();
+}
+
+export function InstallerState() {
+  return window['go']['main']['App']['InstallerState']();
+}
+
+export function InstallerUninstall() {
+  return window['go']['main']['App']['InstallerUninstall']();
+}
+
 export function LoadSession() {
   return window['go']['main']['App']['LoadSession']();
 }

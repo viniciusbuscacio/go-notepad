@@ -21,7 +21,7 @@ import {
 } from "../wailsjs/go/main/App";
 import { EventsOn } from "../wailsjs/runtime/runtime";
 
-export type View = "editor" | "options" | "api";
+export type View = "editor" | "options" | "api" | "installer";
 export type TabPosition = "top" | "left";
 
 // Editor font families offered in Settings. Every non-"mono" option is a Google
