@@ -16,6 +16,7 @@
   --accent: #4cc2ff;
   --accent-hover: #48b2e8;
   --accent-fg: #003a5c;
+  --success: #3fbf6f;
   --disabled-fg: #6a6a6a;
   --border: #333333;
   --panel-bg: #2b2b2b;
@@ -47,6 +48,7 @@
   --accent: #005fb8;
   --accent-hover: #0a6cc8;
   --accent-fg: #ffffff;
+  --success: #107c41;
   --disabled-fg: #a0a0a0;
   --border: #e2e2e2;
   --panel-bg: #ffffff;
@@ -180,6 +182,34 @@ body {
 .ctrl-icon {
   width: 16px;
   height: 16px;
+}
+
+/* Titlebar REST-API indicator: a small green dot, only rendered while the
+   server holds a port open. The soft pulse draws the eye once without being
+   an alarm — the API is user-enabled, the dot is just honest signage. */
+.api-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--success);
+  box-shadow: 0 0 6px var(--success);
+  animation: api-dot-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes api-dot-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 3px var(--success);
+  }
+  50% {
+    box-shadow: 0 0 8px var(--success);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .api-dot {
+    animation: none;
+  }
 }
 
 .ctrl-icon.sq {

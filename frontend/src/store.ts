@@ -2,6 +2,7 @@ import { reactive, watch } from "vue";
 import {
   GetSettings,
   GetVersion,
+  GetAPIStatus,
   SetTheme,
   SetOpacity,
   SetTabPosition,
@@ -261,6 +262,14 @@ watch(
   { deep: true },
 );
 
+// Live REST server status, mirrored from Go (api:state event). Drives the
+// titlebar indicator: a green dot only while a port is actually open.
+export const api = reactive({
+  running: false,
+  port: 0,
+  url: "",
+});
+
 export function go(view: View) {
   ui.view = view;
 }
@@ -463,6 +472,12 @@ export async function loadSettings() {
     applyUpdateState(await GetUpdateInfo());
   } catch {
     /* updater state stays at its defaults */
+  }
+  try {
+    EventsOn("api:state", (s: object) => Object.assign(api, s));
+    Object.assign(api, await GetAPIStatus());
+  } catch {
+    /* indicator stays hidden if the backend isn't reachable */
   }
   // Reopen the previous session's tabs; fall back to a single blank document,
   // like a fresh Notepad window. Enable autosave only after this is done.

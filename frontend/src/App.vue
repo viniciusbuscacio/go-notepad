@@ -6,7 +6,7 @@ import {
   WindowToggleMaximise,
   WindowShow,
 } from "../wailsjs/runtime/runtime";
-import { ui, update, go, loadSettings, flushSession } from "./store";
+import { ui, update, api, go, loadSettings, flushSession } from "./store";
 import { initUIBridge } from "./uibridge";
 import { InstallerState } from "../wailsjs/go/main/App";
 import NotepadView from "./views/NotepadView.vue";
@@ -100,6 +100,18 @@ function onTitlebarMousedown(e: MouseEvent) {
       </div>
 
       <div class="win-controls" style="--wails-draggable: no-drag">
+        <!-- Shown only while the REST server has a port open — an app
+             listening on the network is something the user should always be
+             able to see at a glance (family pattern, born in go-passwords). -->
+        <button
+          v-if="api.running && ui.view !== 'installer'"
+          class="win-btn"
+          :title="`REST API server is running on port ${api.port} — click to configure`"
+          data-testid="api-indicator"
+          @click="go('api')"
+        >
+          <span class="api-dot" aria-hidden="true"></span>
+        </button>
         <button
           v-if="ui.view !== 'installer'"
           class="win-btn"

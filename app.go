@@ -101,6 +101,9 @@ func (a *App) startup(ctx context.Context) {
 			fmt.Fprintln(os.Stderr, "go-notepad: API server autostart failed:", err)
 		}
 	}
+	// Tell the frontend the boot-time server state (auto-start or not) — it
+	// drives the titlebar API indicator.
+	a.emitAPIState()
 }
 
 // Stats returns the line/word/character counts for text. The frontend calls it
@@ -342,6 +345,14 @@ func (a *App) status() APIStatus {
 	}
 }
 
+// emitAPIState pushes the live server status to the frontend ("api:state"),
+// so passive UI like the titlebar indicator stays honest without polling.
+func (a *App) emitAPIState() {
+	if a.ctx != nil {
+		wruntime.EventsEmit(a.ctx, "api:state", a.status())
+	}
+}
+
 func (a *App) startServer() error {
 	dir, err := settings.ConfigDir()
 	if err != nil {
@@ -363,6 +374,7 @@ func (a *App) startServer() error {
 // swallowed — so callers can surface a failed restart (which leaves the server
 // stopped) to the UI.
 func (a *App) applyIfRunning() error {
+	defer a.emitAPIState()
 	if !a.server.Running() {
 		return nil
 	}
@@ -373,17 +385,15 @@ func (a *App) applyIfRunning() error {
 }
 
 func (a *App) StartAPIServer() (APIStatus, error) {
-	if err := a.startServer(); err != nil {
-		return a.status(), err
-	}
-	return a.status(), nil
+	err := a.startServer()
+	a.emitAPIState()
+	return a.status(), err
 }
 
 func (a *App) StopAPIServer() (APIStatus, error) {
-	if err := a.server.Stop(); err != nil {
-		return a.status(), err
-	}
-	return a.status(), nil
+	err := a.server.Stop()
+	a.emitAPIState()
+	return a.status(), err
 }
 
 func (a *App) GetAPIStatus() APIStatus {
