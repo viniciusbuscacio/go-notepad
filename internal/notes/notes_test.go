@@ -67,6 +67,6 @@ func TestSaveOverwrites(t *testing.T) {
 	}
 	b, _ := os.ReadFile(path)
 	if string(b) != "segundo" {
-		t.Errorf("Save não sobrescreveu: %q", b)
+		t.Errorf("Save did not overwrite: %q", b)
 	}
 }
