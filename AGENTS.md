@@ -4,9 +4,9 @@ Tabbed notepad of the [go-apps](https://github.com/viniciusbuscacio/go-apps)
 family — and the family's **visual reference**: when another app's UI is in
 doubt, it should look like go-notepad does.
 
-**Before changing anything, read the family rules** — engineering:
-[go-apps/AGENTS.md](https://github.com/viniciusbuscacio/go-apps/blob/main/AGENTS.md)
-(local sibling checkout: `../go-apps/AGENTS.md`) — UI/visuals:
+**Before changing anything, read the family spec:**
+[`go-apps.spec`](https://github.com/viniciusbuscacio/go-apps/blob/main/go-apps.spec)
+(local sibling checkout: `../go-apps/go-apps.spec`). UI patterns and assets:
 [go-design](https://github.com/viniciusbuscacio/go-design)
 (`../go-design/README.md`).
 
