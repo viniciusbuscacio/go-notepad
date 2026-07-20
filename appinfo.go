@@ -192,7 +192,7 @@ func (a *App) appInfo() any {
 						{Role: "button", Name: "Start/Stop", Testid: "toggle-server", Action: "start or stop the REST server", Risk: riskSensitive},
 						{Role: "status", Name: "Server status", Testid: "status", Description: "shows Running or Stopped"},
 						{Role: "status", Name: "Server error", Testid: "server-error", Description: "the last start/stop/apply failure; present only after a failure"},
-						{Role: "button", Name: "Shuffle port", Testid: "shuffle-port", Action: "pick a random free port (8800-8899) and restart the server if running", Risk: riskSensitive},
+						{Role: "button", Name: "Shuffle port", Testid: "shuffle-port", Action: "pick a random free port (8000-8999) and restart the server if running", Risk: riskSensitive},
 						{Role: "switch", Name: "Start automatically", Testid: "autostart", Action: "toggle starting the server on app launch", Risk: riskSensitive},
 						{Role: "switch", Name: "Use HTTPS", Testid: "use-https", Action: "toggle serving HTTPS with a self-signed pinned cert instead of plain HTTP (restarts the server if running)", Risk: riskSensitive},
 						{Role: "table", Name: "Allowed IPs", Testid: "allowlist", Description: "CIDR allowlist controlling who may call the API. Each row has a remove button with testid 'remove-<cidr>' (e.g. 'remove-127.0.0.1/32'); removing an entry is sensitive (it changes exposure) and the last entry cannot be removed. The current entries are in ui state under 'allowlist'."},

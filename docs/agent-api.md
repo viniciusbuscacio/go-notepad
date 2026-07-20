@@ -8,7 +8,7 @@ Every request needs the header `X-API-Key: <key>` (shown, copyable, in that same
 panel) and must come from an IP in the allowlist (default `127.0.0.1/32`). See
 [security.md](security.md).
 
-Base URL is shown in the panel; by default `http://127.0.0.1:8837`.
+Base URL is shown in the panel; the port is picked at random per install — read it there or in `settings.json`.
 
 ## Start here: `GET /v1/ax`
 

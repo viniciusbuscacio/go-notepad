@@ -130,17 +130,17 @@ from there:
 
 ```bash
 # 1. learn the app (start here)
-curl -H "X-API-Key: YOUR_KEY" http://127.0.0.1:8837/v1/ax
+curl -H "X-API-Key: YOUR_KEY" http://127.0.0.1:PORT/v1/ax
 
 # 2. count words/lines/chars directly
-curl -X POST http://127.0.0.1:8837/v1/stats \
+curl -X POST http://127.0.0.1:PORT/v1/stats \
   -H "X-API-Key: YOUR_KEY" -d '{"text":"hello world"}'   # {"lines":1,"words":2,"chars":11,"charsNoSpaces":10}
 
 # 3. ...or drive the real UI: type into the document, then read it back
-curl -X POST http://127.0.0.1:8837/v1/ui/input -H "X-API-Key: YOUR_KEY" \
+curl -X POST http://127.0.0.1:PORT/v1/ui/input -H "X-API-Key: YOUR_KEY" \
   -d '{"testid":"editor","value":"Hello from an agent"}'
-curl -X POST http://127.0.0.1:8837/v1/ui/key   -H "X-API-Key: YOUR_KEY" -d '{"key":"Ctrl+N"}'
-curl -H "X-API-Key: YOUR_KEY" http://127.0.0.1:8837/v1/ui/state
+curl -X POST http://127.0.0.1:PORT/v1/ui/key   -H "X-API-Key: YOUR_KEY" -d '{"key":"Ctrl+N"}'
+curl -H "X-API-Key: YOUR_KEY" http://127.0.0.1:PORT/v1/ui/state
 # {"view":"editor","text":"Hello from an agent","tabs":[...], ...}
 ```
 

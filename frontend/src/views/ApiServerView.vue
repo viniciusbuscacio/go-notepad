@@ -260,7 +260,7 @@ async function copy(text: string, field: string) {
       <div class="row">
         <span class="row-text">
           <span class="row-label">Port <span class="mono">{{ port }}</span></span>
-          <span class="row-desc">Pick a free port (8800–8899)</span>
+          <span class="row-desc">Pick a free port (8000–8999)</span>
         </span>
         <button
           class="btn"

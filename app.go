@@ -18,10 +18,13 @@ import (
 	wruntime "github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
-// API port range the shuffle button picks from.
+// API port range the shuffle button picks from: 8000–8999, shared by the
+// whole go-apps family. Ports are picked at random, so collisions are
+// near-impossible; if one ever happens, Start fails with a clear error and
+// the user shuffles.
 const (
-	portRangeBase = 8800
-	portRangeSpan = 100 // 8800..8899
+	portRangeBase = 8000
+	portRangeSpan = 1000 // 8000..8999
 )
 
 // App is the thin Wails adapter. Business logic lives in internal/*; App just
@@ -400,7 +403,7 @@ func (a *App) GetAPIStatus() APIStatus {
 	return a.status()
 }
 
-// ShuffleAPIPort picks a random FREE port in 8800–8899 (different from the
+// ShuffleAPIPort picks a random FREE port in 8000–8999 (different from the
 // current one), persists it, and restarts the server if running. It probes for
 // a free port so pressing the button actually escapes an occupied port.
 func (a *App) ShuffleAPIPort() (APIStatus, error) {
